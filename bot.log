@@ -1,0 +1,47 @@
+2026-04-22 00:11:18,896 - INFO - CLI started
+2026-04-22 00:11:19,361 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 0.001, 'price': None}
+2026-04-22 00:11:19,362 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=MARKET, quantity=0.001, price=None
+2026-04-22 00:11:20,353 - ERROR - Order failed: APIError(code=-2019): Margin is insufficient.
+2026-04-22 00:11:20,355 - ERROR - Error: APIError(code=-2019): Margin is insufficient.
+2026-04-22 00:11:50,278 - INFO - CLI started
+2026-04-22 00:11:50,731 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'LIMIT', 'quantity': 0.001, 'price': 30000.0}
+2026-04-22 00:11:50,732 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=LIMIT, quantity=0.001, price=30000.0
+2026-04-22 00:11:51,189 - ERROR - Order failed: APIError(code=-4164): Order's notional must be no smaller than 50 (unless you choose reduce only).
+2026-04-22 00:11:51,190 - ERROR - Error: APIError(code=-4164): Order's notional must be no smaller than 50 (unless you choose reduce only).
+2026-04-22 00:12:50,516 - INFO - CLI started
+2026-04-22 00:12:50,945 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 0.002, 'price': None}
+2026-04-22 00:12:50,946 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=MARKET, quantity=0.002, price=None
+2026-04-22 00:12:51,387 - ERROR - Order failed: APIError(code=-2019): Margin is insufficient.
+2026-04-22 00:12:51,388 - ERROR - Error: APIError(code=-2019): Margin is insufficient.
+2026-04-22 00:14:29,457 - INFO - CLI started
+2026-04-22 00:14:29,845 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 0.002, 'price': None}
+2026-04-22 00:14:29,846 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=MARKET, quantity=0.002, price=None
+2026-04-22 00:14:30,231 - ERROR - Order failed: APIError(code=-2019): Margin is insufficient.
+2026-04-22 00:14:30,232 - ERROR - Error: APIError(code=-2019): Margin is insufficient.
+2026-04-22 00:14:40,773 - INFO - CLI started
+2026-04-22 00:14:41,162 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'LIMIT', 'quantity': 0.002, 'price': 30000.0}
+2026-04-22 00:14:41,163 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=LIMIT, quantity=0.002, price=30000.0
+2026-04-22 00:14:41,845 - ERROR - Order failed: APIError(code=-2019): Margin is insufficient.
+2026-04-22 00:14:41,846 - ERROR - Error: APIError(code=-2019): Margin is insufficient.
+2026-04-22 00:21:58,867 - INFO - CLI started
+2026-04-22 00:21:59,341 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'LIMIT', 'quantity': 0.002, 'price': 30000.0}
+2026-04-22 00:21:59,342 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=LIMIT, quantity=0.002, price=30000.0
+2026-04-22 00:21:59,343 - ERROR - Order failed: unsupported operand type(s) for +: 'NoneType' and 'str'
+2026-04-22 00:21:59,344 - ERROR - Error: unsupported operand type(s) for +: 'NoneType' and 'str'
+2026-04-22 00:26:52,017 - INFO - CLI started
+2026-04-22 00:26:52,505 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'LIMIT', 'quantity': 0.002, 'price': 30000.0}
+2026-04-22 00:26:52,506 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=LIMIT, quantity=0.002, price=30000.0
+2026-04-22 00:26:52,506 - ERROR - Order failed: unsupported operand type(s) for +: 'NoneType' and 'str'
+2026-04-22 00:26:52,507 - ERROR - Error: unsupported operand type(s) for +: 'NoneType' and 'str'
+2026-04-22 00:36:13,454 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'LIMIT', 'quantity': 0.002, 'price': 30000.0}
+2026-04-22 00:36:13,486 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=LIMIT, quantity=0.002, price=30000.0
+2026-04-22 00:36:13,894 - INFO - Order response: {'orderId': 13058669733, 'symbol': 'BTCUSDT', 'status': 'NEW', 'clientOrderId': 'x-Cb7ytekJ7cb0e094091407fb473843', 'price': '30000.00', 'avgPrice': '0.00', 'origQty': '0.0020', 'executedQty': '0.0000', 'cumQty': '0.0000', 'cumQuote': '0.000000', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1776798373186}
+2026-04-22 00:36:13,895 - INFO - Response: {'orderId': 13058669733, 'symbol': 'BTCUSDT', 'status': 'NEW', 'clientOrderId': 'x-Cb7ytekJ7cb0e094091407fb473843', 'price': '30000.00', 'avgPrice': '0.00', 'origQty': '0.0020', 'executedQty': '0.0000', 'cumQty': '0.0000', 'cumQuote': '0.000000', 'timeInForce': 'GTC', 'type': 'LIMIT', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'LIMIT', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1776798373186}
+2026-04-22 00:37:41,221 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 0.002, 'price': None}
+2026-04-22 00:37:41,222 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=MARKET, quantity=0.002, price=None
+2026-04-22 00:37:41,631 - INFO - Order response: {'orderId': 13058672180, 'symbol': 'BTCUSDT', 'status': 'NEW', 'clientOrderId': 'x-Cb7ytekJ9ca1b01818dda7419e246f', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.0020', 'executedQty': '0.0000', 'cumQty': '0.0000', 'cumQuote': '0.000000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1776798460923}
+2026-04-22 00:37:41,633 - INFO - Response: {'orderId': 13058672180, 'symbol': 'BTCUSDT', 'status': 'NEW', 'clientOrderId': 'x-Cb7ytekJ9ca1b01818dda7419e246f', 'price': '0.00', 'avgPrice': '0.00', 'origQty': '0.0020', 'executedQty': '0.0000', 'cumQty': '0.0000', 'cumQuote': '0.000000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1776798460923}
+2026-04-22 00:40:17,316 - INFO - Request: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 0.002, 'price': None}
+2026-04-22 00:40:17,317 - INFO - Placing order | symbol=BTCUSDT, side=BUY, type=MARKET, quantity=0.002, price=None
+2026-04-22 00:40:17,709 - INFO - Order response: {'orderId': 13058678420, 'symbol': 'BTCUSDT', 'status': 'FILLED', 'clientOrderId': 'x-Cb7ytekJ9f619ca3828117cf60753e', 'price': '0.00', 'avgPrice': '75708.000000', 'origQty': '0.0020', 'executedQty': '0.0020', 'cumQty': '0.0020', 'cumQuote': '151.416000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1776798617000}
+2026-04-22 00:40:17,710 - INFO - Response: {'orderId': 13058678420, 'symbol': 'BTCUSDT', 'status': 'FILLED', 'clientOrderId': 'x-Cb7ytekJ9f619ca3828117cf60753e', 'price': '0.00', 'avgPrice': '75708.000000', 'origQty': '0.0020', 'executedQty': '0.0020', 'cumQty': '0.0020', 'cumQuote': '151.416000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'updateTime': 1776798617000}
