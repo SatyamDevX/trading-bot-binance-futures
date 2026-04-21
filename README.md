@@ -23,10 +23,11 @@ pip install -r requirements.txt
 
 Create a `.env` file:
 
+```
 API_KEY=your_testnet_api_key
 API_SECRET=your_testnet_secret
 BASE_URL=https://testnet.binancefuture.com/fapi
-
+```
 ---
 
 ## ▶️ How to Run
