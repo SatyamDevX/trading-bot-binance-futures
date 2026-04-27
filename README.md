@@ -70,6 +70,10 @@ Executed Qty: 0.000
 
 ---
 
+### 🖥️ CLI Execution Screenshot
+
+![Bot CLI Output](assets/Bot_CLI_run_example.jpg)
+
 ## 🧠 Assumptions
 
 * Binance Futures Testnet is used
