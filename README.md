@@ -2,27 +2,31 @@
 
 ## Overview
 
-This project started as a Python CLI trading bot and was extended into a small FastAPI dashboard for Binance Futures Demo trading.
+This project is a FastAPI-based trading dashboard built on top of a Python Binance Futures Demo bot.
 
-It is intentionally scoped as a compact backend-heavy project that demonstrates:
+The scope is intentionally focused: demonstrate strong backend engineering fundamentals through a compact, working system rather than trying to build a full trading platform. The application validates orders, executes demo futures trades, handles Binance server-time drift, and persists recent activity for operational visibility.
 
-- API integration with Binance Futures Demo
-- input validation before trade execution
-- secure environment-based configuration
-- retry handling for Binance timestamp drift errors
-- SQLite-backed activity history
-- backend and UI testing for core flows
+## Key Capabilities
 
-The goal is not to build a full trading platform. The goal is to showcase practical SDE strengths through a focused, working system.
+- validates MARKET and LIMIT orders before execution
+- executes demo futures orders against Binance Futures Demo
+- retries once after syncing server time when Binance returns `APIError(code=-1021)`
+- persists recent validation and execution activity in SQLite
+- exposes a health endpoint for runtime checks
+- keeps API credentials out of the UI
 
-## What It Does
+## Architecture
 
-- validates MARKET and LIMIT order requests
-- executes demo orders against Binance Futures Demo
-- retries once after syncing server time when Binance returns `-1021`
-- records validation and execution activity in SQLite
-- exposes a FastAPI health endpoint
-- provides a simple HTML dashboard for manual testing and demos
+The project is split into small modules with clear responsibilities:
+
+- `app.py`: FastAPI routes and dashboard rendering
+- `bot/settings.py`: environment-based configuration loading
+- `bot/client.py`: Binance client creation
+- `bot/orders.py`: order placement and time-sync retry logic
+- `bot/validators.py`: order validation rules
+- `bot/activity_store.py`: SQLite-backed recent activity persistence
+- `templates/dashboard.html`: server-rendered UI
+- `tests/`: coverage for validation, execution, retry logic, settings, and persistence
 
 ## Tech Stack
 
@@ -33,32 +37,21 @@ The goal is not to build a full trading platform. The goal is to showcase practi
 - `python-binance`
 - `unittest`
 
-## Project Structure
+## Screenshots
 
-```text
-.
-├── app.py
-├── cli.py
-├── requirements.txt
-├── templates/
-│   └── dashboard.html
-├── tests/
-│   ├── test_activity_store.py
-│   ├── test_app.py
-│   ├── test_client.py
-│   ├── test_orders.py
-│   ├── test_settings.py
-│   └── test_validators.py
-└── bot/
-    ├── activity_store.py
-    ├── client.py
-    ├── logging_config.py
-    ├── orders.py
-    ├── settings.py
-    └── validators.py
-```
+Landing page with configuration readiness and project highlights:
 
-## Setup
+![Dashboard landing page](assets/Dashboard_page_with_keys_and_highlights.jpg)
+
+Order workflow with validation, execution, and persisted recent activity:
+
+![Dashboard order workflow](assets/Daboard_img_with_order_section_and_recent_activity.jpg)
+
+Original CLI flow:
+
+![Bot CLI Output](assets/Bot_CLI_run_example.jpg)
+
+## Local Setup
 
 ### 1. Install dependencies
 
@@ -79,10 +72,10 @@ BINANCE_BASE_URL=https://demo-fapi.binance.com
 Notes:
 
 - `.env` is ignored by Git
-- the dashboard never renders your API key or secret
-- runtime SQLite data is also ignored by Git
+- runtime database files are ignored by Git
+- the dashboard only shows configuration readiness, never raw secrets
 
-## Run The App
+## Running The Application
 
 ### FastAPI dashboard
 
@@ -90,13 +83,9 @@ Notes:
 python3 -m uvicorn app:app --reload
 ```
 
-Open:
+Open `http://127.0.0.1:8000`
 
-```text
-http://127.0.0.1:8000
-```
-
-### CLI flow
+### CLI mode
 
 Market order:
 
@@ -110,70 +99,65 @@ Limit order:
 python3 cli.py --symbol BTCUSDT --side BUY --type LIMIT --quantity 0.002 --price 30000
 ```
 
-## Run Tests
+## Running Tests
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-## Demo Flow
+## Demo Walkthrough
 
-The dashboard is designed for a short, high-signal walkthrough:
-
-1. Open the landing page and verify config readiness.
-2. Validate an order request without executing it.
-3. Execute a demo order with explicit confirmation.
-4. Review execution response and persisted activity history.
-5. Observe timestamp auto-retry behavior if Binance returns `-1021`.
+1. Open the dashboard and verify environment readiness.
+2. Validate an order request without execution.
+3. Confirm and execute a demo order.
+4. Review the order response and persisted activity feed.
+5. Observe automatic recovery if Binance returns a timestamp drift error.
 
 ## Engineering Decisions
 
-### Why FastAPI + server-rendered HTML?
+### FastAPI with server-rendered HTML
 
-This keeps the project simple, fast to demo, and backend-focused. It highlights API design, validation, and operational handling without adding frontend framework complexity.
+This keeps the project easy to run, easy to demo, and clearly backend-oriented. It highlights routing, validation, API integration, error handling, and response rendering without introducing unnecessary frontend complexity.
 
-### Why SQLite?
+### SQLite for recent activity persistence
 
-SQLite is enough for a small portfolio project and demonstrates persistence, schema thinking, and clean separation from UI logic.
+SQLite is a good fit for this scope. It demonstrates persistence, schema ownership, and separation of concerns while keeping setup friction very low.
 
-### Why keep the UI simple?
+### Explicit validation before execution
 
-Because the strongest signal here is engineering judgment: a clean, usable interface on top of solid backend behavior.
+The app separates validation from execution so users can inspect a payload safely before sending a demo trade. This also makes the workflow easier to test and reason about.
 
-## Reliability Features
+### Retry handling for Binance `-1021`
 
-- input validation before execution
-- explicit execution confirmation
-- secret-safe configuration display
-- SQLite-backed activity history
-- retry after Binance time synchronization errors
-- modular code split between routes, validation, client setup, order execution, and persistence
+The order layer detects time drift, synchronizes the client timestamp offset with Binance server time, and retries once. That adds realistic resilience without overengineering the solution.
 
-## Current Scope
+## Reliability and Safety
 
-This project is intentionally limited to the parts that best demonstrate engineering fundamentals:
+- validation runs before every execution path
+- demo execution requires explicit confirmation
+- Binance time drift errors are retried after server-time sync
+- recent activity is persisted in SQLite
+- secret values are never rendered in the UI
+- configuration is loaded from environment variables
 
-- order validation
-- demo execution
-- error handling
+## Scope
+
+This project is intentionally optimized for signal over size. It focuses on:
+
+- backend structure
+- external API integration
+- validation and error handling
 - persistence
-- testing
+- testability
+- a demoable interface
 
-It does not try to solve:
+It does not attempt to cover:
 
-- full trading strategy automation
-- authentication and multi-user flows
+- strategy automation
 - portfolio analytics
+- authentication and multi-user access
 - deployment infrastructure
 
-## Screenshot
+## Resume / LinkedIn Summary
 
-CLI output example:
-
-![Bot CLI Output](assets/Bot_CLI_run_example.jpg)
-
-## Resume / LinkedIn Positioning
-
-You can describe this as:
-
-`Built a FastAPI-based Binance Futures Demo trading dashboard with validated order execution, server-time sync retry handling, SQLite activity persistence, and end-to-end test coverage.`
+`Built a FastAPI-based Binance Futures Demo dashboard with validated order execution, SQLite-backed recent activity persistence, and automatic retry handling for Binance server-time drift errors.`
