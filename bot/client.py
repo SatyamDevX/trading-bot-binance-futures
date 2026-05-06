@@ -1,18 +1,23 @@
-# Binance Futures Testnet Client Wrapper
+# Binance Futures client wrapper
 
-from binance.client import Client
-import os
-from dotenv import load_dotenv
+from bot.settings import validate_binance_settings
 
-load_dotenv()
+Client = None
+
+
+def _get_client_class():
+    global Client
+    if Client is None:
+        from binance.client import Client as BinanceClient
+
+        Client = BinanceClient
+    return Client
+
 
 def get_client():
-    api_key = os.getenv("BINANCE_API_KEY")
-    api_secret = os.getenv("BINANCE_API_SECRET")
-    base_url = os.getenv("BINANCE_BASE_URL")
-    client = Client(api_key, api_secret)
+    settings = validate_binance_settings()
 
-    # Futures Testnet URL
-    client.FUTURES_URL = base_url
-
+    client_class = _get_client_class()
+    client = client_class(settings["api_key"], settings["api_secret"])
+    client.FUTURES_URL = settings["base_url"]
     return client

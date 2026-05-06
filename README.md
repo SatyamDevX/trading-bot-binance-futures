@@ -1,97 +1,163 @@
-# Binance Futures Trading Bot (Testnet)
+# Binance Futures Demo Dashboard
 
-## 🚀 Overview
+## Overview
 
-This project is a Python-based CLI trading bot that places MARKET and LIMIT orders on Binance Futures Testnet (USDT-M).
+This project is a FastAPI-based trading dashboard built on top of a Python Binance Futures Demo bot.
 
-Feature: Designed with a modular structure, proper validation, logging, and error handling to simulate real-world trading systems.
+The scope is intentionally focused: demonstrate strong backend engineering fundamentals through a compact, working system rather than trying to build a full trading platform. The application validates orders, executes demo futures trades, handles Binance server-time drift, and persists recent activity for operational visibility.
 
----
+## Key Capabilities
 
-## ⚙️ Setup Instructions
+- validates MARKET and LIMIT orders before execution
+- executes demo futures orders against Binance Futures Demo
+- retries once after syncing server time when Binance returns `APIError(code=-1021)`
+- persists recent validation and execution activity in SQLite
+- exposes a health endpoint for runtime checks
+- keeps API credentials out of the UI
 
-### 1. Clone Repository
+## Architecture
 
-```
-git clone https://github.com/SatyamDevX/trading-bot-binance-futures.git
-cd trading_bot
-```
+The project is split into small modules with clear responsibilities:
 
-### 2. Install Dependencies
+- `app.py`: FastAPI routes and dashboard rendering
+- `bot/settings.py`: environment-based configuration loading
+- `bot/client.py`: Binance client creation
+- `bot/orders.py`: order placement and time-sync retry logic
+- `bot/validators.py`: order validation rules
+- `bot/activity_store.py`: SQLite-backed recent activity persistence
+- `templates/dashboard.html`: server-rendered UI
+- `tests/`: coverage for validation, execution, retry logic, settings, and persistence
 
-pip install -r requirements.txt
+## Tech Stack
 
-### 3. Setup Environment Variables
+- Python
+- FastAPI
+- Jinja2
+- SQLite
+- `python-binance`
+- `unittest`
 
-Create a `.env` file: (example is given in .env.example)
+## Screenshots
 
-```
-BINANCE_API_KEY=your_testnet_api_key
-BINANCE_API_SECRET=your_testnet_secret
-BINANCE_BASE_URL=https://testnet.binancefuture.com/fapi
-```
----
+Landing page with configuration readiness and project highlights:
 
-## ▶️ How to Run
+![Dashboard landing page](assets/Dashboard_page_with_keys_and_highlights.jpg)
 
-### Market Order
+Order workflow with validation, execution, and persisted recent activity:
 
-python3 cli.py --symbol BTCUSDT --side BUY --type MARKET --quantity 0.002
+![Dashboard order workflow](assets/Daboard_img_with_order_section_and_recent_activity.jpg)
 
-### Limit Order
-
-python3 cli.py --symbol BTCUSDT --side BUY --type LIMIT --quantity 0.002 --price 30000
-
----
-
-## 📊 Features
-
-* Place MARKET and LIMIT orders
-* Supports BUY and SELL
-* CLI input validation
-* Structured modular code
-* Logging of requests, responses, and errors
-* Handles API errors (margin, notional, etc.)
-
----
-
-## 📄 Example Output
-
-### Market Order
-
-Status: FILLED
-Executed Qty: 0.002
-Avg Price: 75708
-
-### Limit Order
-
-Status: NEW
-Executed Qty: 0.000
-
----
-
-### 🖥️ CLI Execution Screenshot
+Original CLI flow:
 
 ![Bot CLI Output](assets/Bot_CLI_run_example.jpg)
 
-## 🧠 Assumptions
+## Local Setup
 
-* Binance Futures Testnet is used
-* Minimum notional for BTCUSDT ≈ 50 USDT
-* Testnet funds must be added before trading
+### 1. Install dependencies
 
----
+```bash
+python3 -m pip install -r requirements.txt
+```
 
-## 📁 Logs
+### 2. Configure environment variables
 
-All API requests, responses, and errors are logged in:
-bot.log
+Create a `.env` file using `.env.example` as reference:
 
----
+```env
+BINANCE_API_KEY=your_demo_api_key
+BINANCE_API_SECRET=your_demo_api_secret
+BINANCE_BASE_URL=https://demo-fapi.binance.com
+```
 
-## 🔮 Future Improvements
+Notes:
 
-* Add Stop-Limit orders
-* Add order tracking (polling)
-* Add retry mechanism
-* Build a simple UI/dashboard
+- `.env` is ignored by Git
+- runtime database files are ignored by Git
+- the dashboard only shows configuration readiness, never raw secrets
+
+## Running The Application
+
+### FastAPI dashboard
+
+```bash
+python3 -m uvicorn app:app --reload
+```
+
+Open `http://127.0.0.1:8000`
+
+### CLI mode
+
+Market order:
+
+```bash
+python3 cli.py --symbol BTCUSDT --side BUY --type MARKET --quantity 0.002
+```
+
+Limit order:
+
+```bash
+python3 cli.py --symbol BTCUSDT --side BUY --type LIMIT --quantity 0.002 --price 30000
+```
+
+## Running Tests
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+## Demo Walkthrough
+
+1. Open the dashboard and verify environment readiness.
+2. Validate an order request without execution.
+3. Confirm and execute a demo order.
+4. Review the order response and persisted activity feed.
+5. Observe automatic recovery if Binance returns a timestamp drift error.
+
+## Engineering Decisions
+
+### FastAPI with server-rendered HTML
+
+This keeps the project easy to run, easy to demo, and clearly backend-oriented. It highlights routing, validation, API integration, error handling, and response rendering without introducing unnecessary frontend complexity.
+
+### SQLite for recent activity persistence
+
+SQLite is a good fit for this scope. It demonstrates persistence, schema ownership, and separation of concerns while keeping setup friction very low.
+
+### Explicit validation before execution
+
+The app separates validation from execution so users can inspect a payload safely before sending a demo trade. This also makes the workflow easier to test and reason about.
+
+### Retry handling for Binance `-1021`
+
+The order layer detects time drift, synchronizes the client timestamp offset with Binance server time, and retries once. That adds realistic resilience without overengineering the solution.
+
+## Reliability and Safety
+
+- validation runs before every execution path
+- demo execution requires explicit confirmation
+- Binance time drift errors are retried after server-time sync
+- recent activity is persisted in SQLite
+- secret values are never rendered in the UI
+- configuration is loaded from environment variables
+
+## Scope
+
+This project is intentionally optimized for signal over size. It focuses on:
+
+- backend structure
+- external API integration
+- validation and error handling
+- persistence
+- testability
+- a demoable interface
+
+It does not attempt to cover:
+
+- strategy automation
+- portfolio analytics
+- authentication and multi-user access
+- deployment infrastructure
+
+## Resume / LinkedIn Summary
+
+`Built a FastAPI-based Binance Futures Demo dashboard with validated order execution, SQLite-backed recent activity persistence, and automatic retry handling for Binance server-time drift errors.`
