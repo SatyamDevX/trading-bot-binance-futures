@@ -226,6 +226,34 @@
             display: block;
             margin-bottom: 6px;
         }
+
+        .activity-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .activity-item {
+            padding: 14px;
+            border-radius: 14px;
+            background: #fbf6ee;
+            border: 1px solid var(--line);
+        }
+
+        .activity-item h3 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+        }
+
+        .activity-item p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .activity-item .details {
+            margin-top: 8px;
+            color: #8f2f1d;
+        }
     </style>
 </head>
 <body>
@@ -276,9 +304,9 @@
             <article class="panel">
                 <h2>Next Build Steps</h2>
                 <ol class="steps">
-                    <li>Validate order form input in FastAPI.</li>
-                    <li>Connect validated requests to Binance execution.</li>
-                    <li>Show live response and logging in the dashboard.</li>
+                    <li>Persist recent activity across server restarts.</li>
+                    <li>Handle Binance time-sync issues automatically.</li>
+                    <li>Show richer execution and failure diagnostics.</li>
                 </ol>
             </article>
         </section>
@@ -365,6 +393,29 @@
                 qty {{ form_data.quantity }}
                 {% if form_data.price %}, price {{ form_data.price }}{% endif %}
             </p>
+        </section>
+
+        <section class="panel" style="margin-top: 18px;">
+            <h2>Recent Activity</h2>
+            <p class="subtitle">
+                The latest validation and execution attempts appear here so we can reason about behavior quickly.
+            </p>
+
+            {% if order_activity %}
+            <div class="activity-list">
+                {% for item in order_activity %}
+                <article class="activity-item">
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.payload }}</p>
+                    {% if item.details %}
+                    <p class="details">{{ item.details }}</p>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="preview" style="margin-top: 16px;">No activity yet. Validate or execute an order to populate this feed.</p>
+            {% endif %}
         </section>
     </main>
 </body>

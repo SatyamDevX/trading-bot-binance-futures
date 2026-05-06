@@ -8,6 +8,11 @@ from app import app
 
 
 class AppTests(unittest.TestCase):
+    def setUp(self):
+        from app import order_activity
+
+        order_activity.clear()
+
     def test_health_endpoint_reports_config_state(self):
         with patch.dict(
             os.environ,
@@ -64,6 +69,8 @@ class AppTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Order request is valid", response.text)
         self.assertIn("BTCUSDT", response.text)
+        self.assertIn("Recent Activity", response.text)
+        self.assertIn("Validation passed", response.text)
 
     def test_invalid_limit_order_shows_validation_error(self):
         client = TestClient(app)
@@ -109,6 +116,7 @@ class AppTests(unittest.TestCase):
         self.assertIn("Demo order submitted successfully", response.text)
         self.assertIn("12345", response.text)
         self.assertIn("FILLED", response.text)
+        self.assertIn("Execution succeeded", response.text)
         mock_get_client.assert_called_once()
         mock_place_order.assert_called_once()
 
@@ -150,8 +158,64 @@ class AppTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("Please confirm demo execution before submitting", response.text)
+        self.assertIn("Execution blocked", response.text)
         mock_get_client.assert_not_called()
         mock_place_order.assert_not_called()
+
+    @patch("app.place_order")
+    @patch("app.get_client")
+    def test_execute_failure_is_shown_in_recent_activity(self, mock_get_client, mock_place_order):
+        mock_get_client.return_value = object()
+        mock_place_order.side_effect = Exception(
+            "APIError(code=-1021): Timestamp for this request was 1000ms ahead of the server's time."
+        )
+
+        client = TestClient(app)
+        response = client.post(
+            "/orders/execute",
+            data={
+                "symbol": "BTCUSDT",
+                "side": "BUY",
+                "order_type": "MARKET",
+                "quantity": "0.01",
+                "price": "",
+                "confirm_execution": "yes",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Timestamp for this request", response.text)
+        self.assertIn("Execution failed", response.text)
+
+    @patch("app.place_order")
+    @patch("app.get_client")
+    def test_execute_success_after_timestamp_sync_still_shows_success(
+        self, mock_get_client, mock_place_order
+    ):
+        mock_get_client.return_value = object()
+        mock_place_order.return_value = {
+            "orderId": 67890,
+            "status": "FILLED",
+            "executedQty": "0.002",
+            "avgPrice": "30100.00",
+        }
+
+        client = TestClient(app)
+        response = client.post(
+            "/orders/execute",
+            data={
+                "symbol": "BTCUSDT",
+                "side": "BUY",
+                "order_type": "MARKET",
+                "quantity": "0.002",
+                "price": "",
+                "confirm_execution": "yes",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Demo order submitted successfully", response.text)
+        self.assertIn("67890", response.text)
 
 
 if __name__ == "__main__":
