@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binance Demo Dashboard</title>
+    <style>
+        :root {
+            --bg: #f5f1e8;
+            --panel: #fffdf8;
+            --ink: #1d1d1b;
+            --muted: #5f5a52;
+            --accent: #c86b2a;
+            --accent-soft: #f0d6c2;
+            --ok: #2f6f4f;
+            --warn: #8a5a12;
+            --line: #ded6c8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(200, 107, 42, 0.16), transparent 28%),
+                linear-gradient(180deg, #f8f4ec 0%, var(--bg) 100%);
+            min-height: 100vh;
+        }
+
+        .page {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 48px 20px 64px;
+        }
+
+        .hero {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            margin: 0;
+            font-size: 12px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2.4rem, 5vw, 4.8rem);
+            line-height: 0.95;
+        }
+
+        .subtitle {
+            margin: 0;
+            max-width: 720px;
+            font-size: 1.05rem;
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(52, 42, 27, 0.06);
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 1.2rem;
+        }
+
+        .status-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .status-row:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .badge.ok {
+            color: var(--ok);
+            background: #ddeee5;
+        }
+
+        .badge.warn {
+            color: var(--warn);
+            background: #f6e8cf;
+        }
+
+        .steps {
+            margin: 0;
+            padding-left: 18px;
+            color: var(--muted);
+        }
+
+        .base-url {
+            word-break: break-all;
+            color: var(--accent);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+        }
+
+        label {
+            display: grid;
+            gap: 8px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            padding: 12px 14px;
+            font: inherit;
+            background: #fff;
+        }
+
+        button {
+            background: var(--accent);
+            color: #fffaf5;
+            border: 0;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .message {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 14px;
+        }
+
+        .message.ok {
+            background: #ddeee5;
+            color: var(--ok);
+        }
+
+        .message.error {
+            background: #f6e0db;
+            color: #8f2f1d;
+        }
+
+        .preview {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .button-secondary {
+            background: #efe2d1;
+            color: var(--ink);
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-weight: normal;
+        }
+
+        .checkbox-row input {
+            width: auto;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .result-card {
+            padding: 14px;
+            border-radius: 14px;
+            background: #fbf6ee;
+            border: 1px solid var(--line);
+        }
+
+        .result-card strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">FastAPI V1</p>
+            <h1>Binance Demo Dashboard</h1>
+            <p class="subtitle">
+                This first screen gives us safe operational visibility before we wire in trading actions.
+                It intentionally shows configuration readiness without exposing secret values.
+            </p>
+        </section>
+
+        <section class="grid">
+            <article class="panel">
+                <h2>Runtime Status</h2>
+                <div class="status-list">
+                    <div class="status-row">
+                        <span>API key</span>
+                        <span class="badge {% if config.has_api_key %}ok{% else %}warn{% endif %}">
+                            {% if config.has_api_key %}Configured{% else %}Missing{% endif %}
+                        </span>
+                    </div>
+                    <div class="status-row">
+                        <span>API secret</span>
+                        <span class="badge {% if config.has_api_secret %}ok{% else %}warn{% endif %}">
+                            {% if config.has_api_secret %}Configured{% else %}Missing{% endif %}
+                        </span>
+                    </div>
+                    <div class="status-row">
+                        <span>Base URL</span>
+                        <span class="badge {% if config.has_base_url %}ok{% else %}warn{% endif %}">
+                            {% if config.has_base_url %}Configured{% else %}Missing{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="panel">
+                <h2>Endpoint</h2>
+                <p class="base-url">{{ config.base_url }}</p>
+                <p class="subtitle">
+                    For Futures Demo, this can be something like <strong>https://demo-fapi.binance.com</strong>.
+                    The app reads it from the environment instead of hardcoding it.
+                </p>
+            </article>
+
+            <article class="panel">
+                <h2>Next Build Steps</h2>
+                <ol class="steps">
+                    <li>Validate order form input in FastAPI.</li>
+                    <li>Connect validated requests to Binance execution.</li>
+                    <li>Show live response and logging in the dashboard.</li>
+                </ol>
+            </article>
+        </section>
+
+        <section class="panel" style="margin-top: 18px;">
+            <h2>Order Validation</h2>
+            <p class="subtitle">
+                You can validate first, then explicitly execute a demo order. Validation always runs before execution.
+            </p>
+            <form method="post" action="/orders/validate" class="form-grid">
+                <label>
+                    Symbol
+                    <input name="symbol" value="{{ form_data.symbol }}" placeholder="BTCUSDT">
+                </label>
+                <label>
+                    Side
+                    <select name="side">
+                        <option value="BUY" {% if form_data.side == "BUY" %}selected{% endif %}>BUY</option>
+                        <option value="SELL" {% if form_data.side == "SELL" %}selected{% endif %}>SELL</option>
+                    </select>
+                </label>
+                <label>
+                    Type
+                    <select name="order_type">
+                        <option value="MARKET" {% if form_data.order_type == "MARKET" %}selected{% endif %}>MARKET</option>
+                        <option value="LIMIT" {% if form_data.order_type == "LIMIT" %}selected{% endif %}>LIMIT</option>
+                    </select>
+                </label>
+                <label>
+                    Quantity
+                    <input name="quantity" type="number" step="0.0001" value="{{ form_data.quantity }}">
+                </label>
+                <label>
+                    Price
+                    <input name="price" type="number" step="0.01" value="{{ form_data.price }}" placeholder="Only for LIMIT">
+                </label>
+                <div class="actions">
+                    <button type="submit" formaction="/orders/validate">Validate Order</button>
+                    <button type="submit" class="button-secondary" formaction="/orders/execute">Execute Demo Order</button>
+                </div>
+                <label class="checkbox-row">
+                    <input name="confirm_execution" type="checkbox" value="yes">
+                    I understand this will submit a demo Binance Futures order.
+                </label>
+                <p class="preview">
+                    Safety note: this app never displays API key or secret values in the UI.
+                </p>
+            </form>
+
+            {% if execution_result %}
+            <div class="result-grid">
+                <div class="result-card">
+                    <strong>Order ID</strong>
+                    {{ execution_result.order_id }}
+                </div>
+                <div class="result-card">
+                    <strong>Status</strong>
+                    {{ execution_result.status }}
+                </div>
+                <div class="result-card">
+                    <strong>Executed Qty</strong>
+                    {{ execution_result.executed_qty }}
+                </div>
+                <div class="result-card">
+                    <strong>Average Price</strong>
+                    {{ execution_result.avg_price }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if success_message %}
+            <div class="message ok">{{ success_message }}</div>
+            {% endif %}
+
+            {% if error_message %}
+            <div class="message error">{{ error_message }}</div>
+            {% endif %}
+
+            <p class="preview" style="margin-top: 14px;">
+                Current payload:
+                <strong>{{ form_data.symbol }}</strong>,
+                {{ form_data.side }},
+                {{ form_data.order_type }},
+                qty {{ form_data.quantity }}
+                {% if form_data.price %}, price {{ form_data.price }}{% endif %}
+            </p>
+        </section>
+    </main>
+</body>
+</html>
