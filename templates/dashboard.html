@@ -250,6 +250,12 @@
             color: var(--muted);
         }
 
+        .activity-item .timestamp {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--accent);
+        }
+
         .activity-item .details {
             margin-top: 8px;
             color: #8f2f1d;
@@ -259,11 +265,11 @@
 <body>
     <main class="page">
         <section class="hero">
-            <p class="eyebrow">FastAPI V1</p>
+            <p class="eyebrow">FastAPI Demo Project</p>
             <h1>Binance Demo Dashboard</h1>
             <p class="subtitle">
-                This first screen gives us safe operational visibility before we wire in trading actions.
-                It intentionally shows configuration readiness without exposing secret values.
+                A compact trading dashboard that validates requests, executes demo futures orders,
+                persists recent activity, and keeps secret values out of the interface.
             </p>
         </section>
 
@@ -302,19 +308,19 @@
             </article>
 
             <article class="panel">
-                <h2>Next Build Steps</h2>
+                <h2>Project Highlights</h2>
                 <ol class="steps">
-                    <li>Persist recent activity across server restarts.</li>
-                    <li>Handle Binance time-sync issues automatically.</li>
-                    <li>Show richer execution and failure diagnostics.</li>
+                    <li>Validation runs before every execution attempt.</li>
+                    <li>Binance `-1021` timestamp drift is retried after time sync.</li>
+                    <li>Recent activity is persisted in SQLite.</li>
                 </ol>
             </article>
         </section>
 
         <section class="panel" style="margin-top: 18px;">
-            <h2>Order Validation</h2>
+            <h2>Order Actions</h2>
             <p class="subtitle">
-                You can validate first, then explicitly execute a demo order. Validation always runs before execution.
+                Use validation as a safe preview, then explicitly confirm before placing a demo order.
             </p>
             <form method="post" action="/orders/validate" class="form-grid">
                 <label>
@@ -349,10 +355,10 @@
                 </div>
                 <label class="checkbox-row">
                     <input name="confirm_execution" type="checkbox" value="yes">
-                    I understand this will submit a demo Binance Futures order.
+                    I understand this will submit a Binance Futures Demo order.
                 </label>
                 <p class="preview">
-                    Safety note: this app never displays API key or secret values in the UI.
+                    Safety note: the UI only shows configuration readiness, never the actual API credentials.
                 </p>
             </form>
 
@@ -398,7 +404,7 @@
         <section class="panel" style="margin-top: 18px;">
             <h2>Recent Activity</h2>
             <p class="subtitle">
-                The latest validation and execution attempts appear here so we can reason about behavior quickly.
+                The latest validation and execution attempts are persisted so the dashboard stays useful after refresh or restart.
             </p>
 
             {% if order_activity %}
@@ -406,6 +412,7 @@
                 {% for item in order_activity %}
                 <article class="activity-item">
                     <h3>{{ item.title }}</h3>
+                    <p class="timestamp">{{ item.created_at }}</p>
                     <p>{{ item.payload }}</p>
                     {% if item.details %}
                     <p class="details">{{ item.details }}</p>

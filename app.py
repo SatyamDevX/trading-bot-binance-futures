@@ -2,13 +2,14 @@ from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from bot.activity_store import create_activity_store
 from bot.client import get_client
 from bot.orders import place_order
 from bot.settings import get_public_config_status
 from bot.validators import validate_order
 
 templates = Jinja2Templates(directory="templates")
-order_activity = []
+activity_store = create_activity_store()
 
 
 def create_app():
@@ -123,6 +124,7 @@ def normalize_order_form(symbol, side, order_type, quantity, price, coerce_price
 
 
 def validate_normalized_order(normalized):
+    # Keep validation logic shared between the safe preview flow and real execution flow.
     validate_order(
         normalized["symbol"],
         normalized["side"],
@@ -133,6 +135,7 @@ def validate_normalized_order(normalized):
 
 
 def build_execution_result(order_response):
+    # The template only needs a small stable subset of the Binance response.
     result = {
         "order_id": order_response.get("orderId", "N/A"),
         "status": order_response.get("status", "N/A"),
@@ -150,15 +153,11 @@ def build_success_message(client):
 
 
 def append_activity(title, payload, details=None):
-    order_activity.insert(
-        0,
-        {
-            "title": title,
-            "payload": format_activity_payload(payload),
-            "details": details,
-        },
+    activity_store.append(
+        title=title,
+        payload=format_activity_payload(payload),
+        details=details,
     )
-    del order_activity[8:]
 
 
 def format_activity_payload(payload):
@@ -188,6 +187,7 @@ def render_dashboard(
     execution_result=None,
     activity_title=None,
 ):
+    # Centralizing template rendering keeps GET and POST flows consistent.
     status = get_public_config_status()
     return templates.TemplateResponse(
         request,
@@ -206,7 +206,7 @@ def render_dashboard(
             "error_message": error_message,
             "execution_result": execution_result,
             "activity_title": activity_title,
-            "order_activity": order_activity,
+            "order_activity": activity_store.list_recent(limit=8),
         },
     )
 

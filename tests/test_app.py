@@ -1,17 +1,23 @@
 import os
+import tempfile
 import unittest
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
+import app as app_module
 from app import app
 
 
 class AppTests(unittest.TestCase):
     def setUp(self):
-        from app import order_activity
+        handle, self.db_path = tempfile.mkstemp(suffix=".db")
+        os.close(handle)
+        app_module.activity_store = app_module.create_activity_store(self.db_path)
 
-        order_activity.clear()
+    def tearDown(self):
+        if os.path.exists(self.db_path):
+            os.remove(self.db_path)
 
     def test_health_endpoint_reports_config_state(self):
         with patch.dict(
@@ -216,6 +222,25 @@ class AppTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Demo order submitted successfully", response.text)
         self.assertIn("67890", response.text)
+
+    def test_activity_persists_across_requests(self):
+        client = TestClient(app)
+
+        client.post(
+            "/orders/validate",
+            data={
+                "symbol": "BTCUSDT",
+                "side": "BUY",
+                "order_type": "MARKET",
+                "quantity": "0.01",
+                "price": "",
+            },
+        )
+
+        response = client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Validation passed", response.text)
 
 
 if __name__ == "__main__":
